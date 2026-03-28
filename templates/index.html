@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Resume Matcher</title>
+    </head>
+    <body>
+        <h1>Resume vs Job Matcher</h1>
+        <form method="POST" enctype="multipart/form-data">
+                <label>Upload Resume (ONLY PDF): </label><br>
+                <input type="file" name="resume" required><br><br>
+
+                <label> Paste Job Description: </label> <br> 
+
+                <textarea name="job_desc" rows="10" cols="50" required></textarea><br>
+
+                <button type="submit">Analyze</button>
+        </form>
+
+        {% if score is not none %}
+            <h2>Match Score: {{score}}%</h2>
+
+            <h3> Matched Skills: </h3>
+            <ul>
+                {% for skill in matched_skills %}
+                <li>{{skill}}</li>
+                {% endfor %}
+            </ul>
+
+            <h3> Missing Skills: </h3>
+            <ul>
+                {% for skill in missing_skills %}
+                <li>{{skill}}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+    </body>
+</html>
