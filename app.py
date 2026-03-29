@@ -2,6 +2,8 @@ from flask import Flask, request, render_template
 import pdfplumber
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sentence_transformers import SentenceTransformer, util 
+
 import re
 
 app = Flask(__name__)
@@ -29,12 +31,23 @@ def extract_skills(text):
             found.append(skill)
     return found 
 
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# def compute_similarity(resume_text, job_desc):
+#     docs = [resume_text, job_desc]
+#     vectorizer = TfidfVectorizer(stop_words='english')
+#     tfidf_matrix = vectorizer.fit_transform(docs)
+#     score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
+#     return round(score[0][0] * 100, 2)
+
+#UPDATE, NEW COMPUTE SIMILARITY (if works better old one gonna be completely removed)
+
 def compute_similarity(resume_text, job_desc):
-    docs = [resume_text, job_desc]
-    vectorizer = TfidfVectorizer(stop_words='english')
-    tfidf_matrix = vectorizer.fit_transform(docs)
-    score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
-    return round(score[0][0] * 100, 2)
+    emb1 = model.encode(resume_text, convert_to_tensor=True)
+    emb2 = model.encode(job_desc, convert_to_tensor=True)
+
+    score = util.cos_sim(emb1, emb2)
+    return round(float(score) * 100, 2)
 
 
 @app.route('/', methods=['GET', 'POST'])
