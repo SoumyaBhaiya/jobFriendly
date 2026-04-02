@@ -1,37 +1,104 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Resume Matcher</title>
+        <title>jobFriendly</title>
+
+        <style>
+            body {
+                font-family: Arial;
+                background: #0f172a;
+                color: white;
+                text-align: center;
+            }
+            textarea, input{
+                width: 60%;
+                padding: 10px;
+                margin: 10px;
+                border-radius: 8px;
+                border: none;
+            }
+
+            button{
+                padding: 10px 20px;
+                background: #22c55e;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+            .card{
+                background: #1e293b;
+                padding: 20px;
+                margin: 20px auto;
+                width: 60%;
+                border-radius: 10px;
+            }
+
+            .green { color: #22c55e;}
+            .red { color: #ef4444;}
+            .yellow {color: #eab308; }
+
+            .bar{
+                height: 20px;
+                background: gray;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            .fill{
+                height: 100%;
+                background: #22c55e;
+            }
+
+        </style>
     </head>
     <body>
-        <h1>Resume vs Job Matcher</h1>
+        <h1>Welcome to jobFriendly</h1>
         <form method="POST" enctype="multipart/form-data">
-                <label>Upload Resume (ONLY PDF): </label><br>
+                <label>Upload Resume (ONLY PDF FOR NOW): </label><br>
                 <input type="file" name="resume" required><br><br>
-
-                <label> Paste Job Description: </label> <br> 
-
-                <textarea name="job_desc" rows="10" cols="50" required></textarea><br>
+                <textarea name="job_desc" rows="10" cols="50" placeholder="Paste Job Description" required></textarea><br>
 
                 <button type="submit">Analyze</button>
         </form>
 
         {% if score is not none %}
+        <div class="card">
             <h2>Match Score: {{score}}%</h2>
 
-            <h3> Matched Skills: </h3>
+            <div class="bar">
+                <div class="fill" style="width: {{score}}%;"></div>
+            </div>
+            <p>Semantic Score: {{ (sem_score*100) | round(2) }}%</p>
+            <p>Keyword Score: {{ (key_score * 100) | round(2) }}%</p>
+        </div>
+        <div class="card">
+            <h3 class="green"> Matched Skills: </h3>
             <ul>
                 {% for skill in matched_skills %}
                 <li>{{skill}}</li>
                 {% endfor %}
             </ul>
-
-            <h3> Missing Skills: </h3>
+        </div>
+        <div class="card">
+            <h3 class="red"> Missing Skills: </h3>
             <ul>
                 {% for skill in missing_skills %}
                 <li>{{skill}}</li>
                 {% endfor %}
             </ul>
-            {% endif %}
+        </div>
+        <div class="card">
+            <h3 class="yellow"> Suggestions </h3>
+            <ul>
+                {% for s in suggestions %}
+                <li>{{s}}</li>
+                {% endfor %}
+            </ul>
+
+        </div> 
+    
+    {% endif %}
     </body>
 </html>
