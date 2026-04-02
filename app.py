@@ -51,7 +51,7 @@ def compute_similarity(resume_text, job_desc):
     emb2 = model.encode(job_desc, convert_to_tensor=True)
 
     score = util.cos_sim(emb1, emb2)
-    return round(float(score) * 100, 2)
+    return float(score)
 
 #adding a 'keyword match score': Quite simple, total skills matched divided by total job skills.
 #what extra to add here? 
