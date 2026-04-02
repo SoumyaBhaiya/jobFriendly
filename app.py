@@ -17,19 +17,23 @@ def extract_text_from_pdf(file):
     
 
 def clean_text(text):
+    text = text.lower()
+    text = re.sub(r"\s+", " ", text) #removing the extra spaces
     text = re.sub(r"[^a-zA-Z0-9\s]", "", text)
-    return text
+
+    return text.strip()
 
 COMMON_SKILLS = ["excel", "sql", "python", "tableau", "powerbi", "machine learning",
     "data analysis", "statistics", "etl", "dashboard", "reporting",
-    "crm", "netsuite", "inventory", "sales", "analytics"]
+    "crm", "netsuite", "inventory", "sales", "analytics", "hadoop",  "spark"]
 
 def extract_skills(text):
-    found = []
+    found = set()
     for skill in COMMON_SKILLS:
-        if skill in text:
-            found.append(skill)
-    return found 
+        pattern = r"\b" + re.escape(skill) + r"\b"
+        if re.search(pattern, text):
+            found.add(skill)
+    return list(found)
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -49,13 +53,39 @@ def compute_similarity(resume_text, job_desc):
     score = util.cos_sim(emb1, emb2)
     return round(float(score) * 100, 2)
 
+#adding a 'keyword match score': Quite simple, total skills matched divided by total job skills.
+#what extra to add here? 
+'''BIGGEST QUESTION IS: WHAT CLASSIFIES AS A 'SKILL'?'''
+
+def keyword_score(resume_skills, job_skills):
+    if not job_skills:
+        return 0
+    match = len(set(resume_skills) & set(job_skills))
+    return match / len(job_skills)
+
+
+#Final Score (more into this in a bit)
+def compute_final_score(sem, key):
+    return round((0.7 * sem + 0.3 * key) * 100, 2)
+
+#SUGGESTIONS (WILL BE ADDED MORE INTO THIS)
+
+def generate_suggestions(missing_skills):
+    suggestions = []
+    for skill in missing_skills:
+        suggestions.append(f"Consider adding or learning these skills: {skill}")
+    return suggestions 
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     score = None 
+    sem_score = None 
+    key_score = None 
 
     missing_skills = []
     matched_skills = [] 
+    suggestions = [] 
 
     if request.method == "POST":
         resume = request.files['resume']
@@ -64,18 +94,28 @@ def index():
         resume_text = clean_text(extract_text_from_pdf(resume))
         job_desc_clean = clean_text(job_desc)
 
-        score = compute_similarity(resume_text, job_desc_clean)
+        #scores
+
+        sem_score = compute_similarity(resume_text, job_desc_clean)
 
         resume_skills = extract_skills(resume_text)
         job_skills = extract_skills(job_desc_clean)
+        key_score = keyword_score(resume_skills, job_skills)
 
+        score = compute_final_score(sem_score, key_score)
+
+        #skills
         matched_skills = list(set(resume_skills) & set(job_skills))
         missing_skills = list(set(job_skills) - set(resume_skills))
 
-
-
-        
-    return render_template('index.html', score=score, missing_skills=missing_skills, matched_skills=matched_skills)
+        #suggestions 
+        suggestions = generate_suggestions(missing_skills)
+    
+    #returning to webpage 
+    
+    return render_template('index.html', score=score, missing_skills=missing_skills, 
+                           matched_skills=matched_skills, key_score=key_score, sem_score=sem_score,
+                           suggestions=suggestions)
 
 
 if __name__ == "__main__":
