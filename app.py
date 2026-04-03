@@ -23,6 +23,9 @@ def clean_text(text):
 
     return text.strip()
 
+#TO DO:
+#AIM: To make a dataset that's gonna update itself with skills in their respective 'domain' as they read more JD and resume
+#The Common Skills list is going to be replaced by a dataset or a dict taken from that dataset.
 COMMON_SKILLS = ["excel", "sql", "python", "tableau", "powerbi", "machine learning",
     "data analysis", "statistics", "etl", "dashboard", "reporting",
     "crm", "netsuite", "inventory", "sales", "analytics", "hadoop",  "spark"]
