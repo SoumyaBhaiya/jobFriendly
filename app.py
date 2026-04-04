@@ -69,7 +69,7 @@ def extract_skills(text):
             if re.search(pattern, text):
                 found_skills[category].append(skill)
     found_skills = {k: v for k, v in found_skills.items() if v}
-    return list(found_skills)
+    return found_skills
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -117,7 +117,7 @@ def compute_final_score(sem, key):
 
 def generate_suggestions(missing_skills):
     suggestions = []
-    for category, skills in missing_skills:
+    for category, skills in missing_skills.items():
         suggestions.append(f"In {category}, Consider adding or learning these skills: {', '.join(skills)}") #made small fix here
     return suggestions 
 
