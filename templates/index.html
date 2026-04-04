@@ -75,27 +75,34 @@
         </div>
         <div class="card">
             <h3 class="green"> Matched Skills: </h3>
+            {% for category, skills in matched_skills.items() %}
+            <h4> {{category }}</h4>
             <ul>
-                {% for skill in matched_skills %}
+                {%for skill in skills %}
                 <li>{{skill}}</li>
                 {% endfor %}
             </ul>
+            {% endfor %}
         </div>
         <div class="card">
             <h3 class="red"> Missing Skills: </h3>
+            {% for category, skills in missing_skills.items() %}
+            <h4> {{category}}</h4>
             <ul>
-                {% for skill in missing_skills %}
+                {% for skill in skills %}
                 <li>{{skill}}</li>
                 {% endfor %}
             </ul>
+            {% endfor %}
         </div>
         <div class="card">
             <h3 class="yellow"> Suggestions </h3>
+            {% for s in suggestions %}
+            
             <ul>
-                {% for s in suggestions %}
                 <li>{{s}}</li>
-                {% endfor %}
             </ul>
+            {% endfor %}
 
         </div> 
     
