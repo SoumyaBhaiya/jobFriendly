@@ -42,7 +42,7 @@ COMMON_SKILLS = {
 "Google Data Studio","Apache Superset","Zoho Analytics"
 ],
 
-"Machine Learning & AI": [
+"Machine Learning": [
 "Scikit-learn","TensorFlow","Keras","PyTorch","XGBoost","LightGBM",
 "CatBoost","OpenCV","NLTK","spaCy","Hugging Face Transformers",
 "Fast.ai","MLlib","YOLO","Reinforcement Learning","Deep Learning",
@@ -50,6 +50,13 @@ COMMON_SKILLS = {
 "Decision Trees","Random Forest","SVM","Neural Networks",
 "Gradient Boosting","AutoML"
 ],
+
+"AI Engineering and LLMs": ["LangChain","LlamaIndex","Prompt Engineering","Vector Databases",
+"FAISS","ChromaDB","Retrieval Augmented Generation (RAG)",
+"Fine-tuning LLMs","Model Deployment","OpenAI API",
+"LLM Evaluation","AI Agents","Embedding Models",
+"Tokenization","Inference Optimization","LoRA",
+"Quantization","Serving Models","vLLM","AI Pipelines"],
 
 "Cloud & DevOps": [
 "AWS","Azure","Google Cloud Platform","Docker","Kubernetes","Terraform",
