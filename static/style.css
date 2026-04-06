@@ -1,0 +1,47 @@
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    text-align: center;
+}
+
+textarea, input{
+    width: 60%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 8px;
+    border: none;
+}
+
+button{
+    padding: 10px 20px;
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.card{
+    background: #1e293b;
+    padding: 20px;
+    margin: 20px auto;
+    width: 60%;
+    border-radius: 10px;
+}
+
+.green { color: #22c55e;}
+.red { color: #ef4444;}
+.yellow {color: #eab308; }
+
+.bar{
+    height: 20px;
+    background: gray;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.fill{
+    height: 100%;
+    background: #22c55e;
+}
