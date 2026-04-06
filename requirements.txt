@@ -6,3 +6,13 @@ Here are the list of libraries that you NEED to have to run this.
 Python Libraries: 
 Flask, pdfplumber, scikit-learn, re, sentence-transformers, spacy
 
+To Create a Virtual Environment
+
+>>> python -m venv <your envrionement name here>
+
+To activate it
+<your_env_name>\Scripts\activate
+
+Then run
+
+pip install <all the packagaes name seperated with space " " >
