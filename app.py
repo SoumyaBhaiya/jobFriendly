@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 import pdfplumber
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer, util 
+from sentence_transformers import SentenceTransformer, util  
  
 import json
 import re
