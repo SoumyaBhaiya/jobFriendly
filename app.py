@@ -100,6 +100,7 @@ def index():
     score = None 
     sem_score = None 
     key_score = None 
+    
 
     missing_skills = {}
     matched_skills = {} 
