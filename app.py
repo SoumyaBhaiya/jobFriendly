@@ -164,7 +164,7 @@ def index():
             if missing:
                 missing_skills[category] = list(missing)
         #suggestions 
-        suggestions = generate_suggestions(missing_skills)
+        suggestions = generate_suggestions(resume_text, job_desc, missing_skills)
     
     #returning to webpage 
     
