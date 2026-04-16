@@ -123,7 +123,11 @@ def generate_suggestions(resume_text, job_desc, missing_skills):
     KEEP IT CONCISE.
     """
     return query_llama(prompt=prompt)
-
+# WHAT TO CHANGE IN THE PROMPT AREA. Give:
+#    1. 3 most important improvements
+#    2. What recruiteer might reject this candidate for
+# YOU ARE TO GIVE ONLY ONE LINE ANSWERS. DO NOT GIVE ANYTHING UNNCESSARY
+# AND ONLY ANSWER WHAT'S ASKED, NO EXTRA SYLLABLE (fine tune this?)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
