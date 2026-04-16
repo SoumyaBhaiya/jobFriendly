@@ -3,7 +3,8 @@ import pdfplumber
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer, util  
- 
+import requests 
+# from ollama import chat ##I don't think i need this now. cause i will use openai localhost server 
 import json
 import re
 
@@ -42,6 +43,19 @@ def extract_skills(text):
                 found_skills[category].append(skill)
     found_skills = {k: v for k, v in found_skills.items() if v}
     return found_skills
+
+#AI: Model type and connection
+def query_llama(prompt):
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={
+            "model": "llama3.2:3b",
+            "prompt":prompt,
+            "stream": False
+        }
+    )
+    return response.json()["response"]
+
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
@@ -86,13 +100,29 @@ def compute_final_score(sem, key):
     return round((0.7 * sem + 0.3 * key) * 100, 2)
 
 #SUGGESTIONS (WILL BE ADDED MORE INTO THIS)
-#THIS IS THE PART THAT SHOULD BE CHANGED AND IMPROVED OR REMOVED! RIGHT NOW SUGGESTIONS ARE JUST 'MISSING SKILLS' DIFFERENTELY WORDED!
+#Adding AI here.
+def generate_suggestions(resume_text, job_desc, missing_skills):
+    prompt = f"""
+    You are a professional resume coach.
 
-def generate_suggestions(missing_skills):
-    suggestions = []
-    for category, skills in missing_skills.items():
-        suggestions.append(f"In {category}, Consider adding or learning these skills: {', '.join(skills)}") #made small fix here
-    return suggestions 
+    Job Description:
+    {job_desc}
+
+    Resume:
+    {resume_text}
+
+    Missing Skills:
+    {missing_skills}
+
+
+    Give:
+    1. 3 most important improvements
+    2. Specific resume bullet suggesstions
+    3. What recruiteer might reject this candidate for
+
+    KEEP IT CONCISE.
+    """
+    return query_llama(prompt=prompt)
 
 
 @app.route('/', methods=['GET', 'POST'])
