@@ -117,10 +117,18 @@ def generate_suggestions(resume_text, job_desc, missing_skills):
 
     Give:
     1. 3 most important improvements
-    2. Specific resume bullet suggesstions
-    3. What recruiteer might reject this candidate for
+    2. What recruiteer might reject this candidate for
 
-    KEEP IT CONCISE.
+    YOU ARE TO GIVE ONLY ONE LINE ANSWERS. DO NOT GIVE ANYTHING UNNCESSARY
+    AND ONLY ANSWER WHAT'S ASKED, NO EXTRA SYLLABLE. (YOU ABSOLUTELY NEED TO GIVE THOSE 2 THINGS)
+
+    An Example Response:
+    1) <1: (10-12 words MAX)>
+    2) <2: (10-12 words MAX)>
+    3) <3: (10-12 words MAX)>
+
+    Recruiter might reject you because:
+    <reason here (not more than 20 words) (if there are multiple reason, make them short and seperate them with ',')>
     """
     return query_llama(prompt=prompt)
 # WHAT TO CHANGE IN THE PROMPT AREA. Give:
