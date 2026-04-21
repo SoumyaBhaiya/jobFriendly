@@ -125,25 +125,32 @@ def compute_similarity(resume_text, job_desc):
 #what extra to add here? 
 '''BIGGEST QUESTION IS: WHAT CLASSIFIES AS A 'SKILL'?'''
 
-#UPDATED THIS FUNCTION TO HANDLE CATEOGRY TOO
-def keyword_score(resume_skills, job_skills):
-    if not job_skills:
-        return 0
-    match = 0
-    total = 0
-    for category in job_skills:
-        job_set = set(job_skills[category])
-        total += len(job_set)
-        resume_set = set(resume_skills.get(category, []))
-        match+= len(job_set & resume_set)
-    if total ==0:
-        return 0
-    return match / total
+#Removed the keyword score
+#Adding the Weighted Skill Scoring System
+
+def weighted_skill_score(resume_text, must_skills, good_skills):
+    resume_text = resume_text.lower()
+
+    must_match = sum (1 for s in must_skills if s.lower() in resume_text)
+    good_match = sum(1 for s in good_skills if s.lower() in resume_text)
+
+    must_total = len(must_skills)
+    good_total = len(good_skills)
+
+    must_ratio = must_match / must_total if must_total else 0
+    good_ratio = good_match / good_total if good_total else 0
+
+    score = (0.7* must_ratio) + (0.3 * good_ratio)
+
+    if must_total > 0 and must_match < (0.5 * must_total):
+        score *= 0.6
+    
+    return score 
 
 
 #Final Score (more into this in a bit)
-def compute_final_score(sem, key):
-    return round((0.7 * sem + 0.3 * key) * 100, 2)
+def compute_final_score(sem, skill, exp):
+    return round((0.5 * sem + 0.3 * skill + 0.2 * exp) * 100, 2)
 
 #SUGGESTIONS (WILL BE ADDED MORE INTO THIS)
 #Adding AI here.
@@ -187,7 +194,8 @@ def generate_suggestions(resume_text, job_desc, missing_skills):
 def index():
     score = None 
     sem_score = None 
-    key_score = None 
+    skill_score = None 
+    exp_score = None 
     
 
     missing_skills = {}
@@ -201,33 +209,52 @@ def index():
         resume_text = clean_text(extract_text_from_pdf(resume))
         job_desc_clean = clean_text(job_desc)
 
+        #ADDING A VALIDATION HERE
+
+        if len(job_desc.split()) < 30 or len(resume_text.split()) < 50:
+            return render_template("index.html", error = "Provide valid resume and job description.")
+        
+
         #scores
 
         sem_score = compute_similarity(resume_text, job_desc_clean)
 
         resume_skills = extract_skills(resume_text)
         job_skills = extract_skills(job_desc_clean)
-        key_score = keyword_score(resume_skills, job_skills)
 
-        score = compute_final_score(sem_score, key_score)
+        job_skill_list = flatten_skills(job_skills)
+        resume_skill_list = flatten_skills(resume_skills)
+
+        #LLM Classification
+
+        classified = classify_skills_llm(job_skill_list)
+        must_skills = classified.get("must_have", [])
+        good_skills = classified.get("good_to_have", [])
+
+        #Skill Scoring
+        skill_score = weighted_skill_score(resume_text,must_skills, good_skills)
+
+        #experience score
+        exp_score = experience_score_llm(resume_text, job_desc)
+
+        #final Score
+        
+        score = compute_final_score(sem_score, skill_score, exp_score)
 
 
-        #EDITING THE PART BELOW TO HANDLE CATEGORIES
-        #skills
-        for category in job_skills:
-            matched = set(job_skills[category]) & set(resume_skills.get(category, []))
-            missing = set(job_skills[category]) - set(resume_skills.get(category, []))
-            if matched:
-                matched_skills[category] = list(matched)
-            if missing:
-                missing_skills[category] = list(missing)
-        #suggestions 
-        suggestions = generate_suggestions(resume_text, job_desc, missing_skills)
+        #Matched and missing 
+        missing_must = [s for s in must_skills if s.lower() not in resume_text]
+        matched_must = [s for s in must_skills if s.lower() in resume_text]
+
+        missing_skills = {"Must Have": missing_must}
+        matched_skills = {"Must Have": matched_must}
+
+        suggestions = generate_suggestions(resume_text, job_desc, missing_must)
     
     #returning to webpage 
     
     return render_template('index.html', score=score, missing_skills=missing_skills, 
-                           matched_skills=matched_skills, key_score=key_score, sem_score=sem_score,
+                           matched_skills=matched_skills, key_score=skill_score, sem_score=sem_score,
                            suggestions=suggestions)
 
 
