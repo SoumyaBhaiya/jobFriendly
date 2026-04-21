@@ -45,3 +45,34 @@ button{
     height: 100%;
     background: #22c55e;
 }
+
+.hidden {
+    display: none;
+}
+
+.error {
+    background: #7f1d1d;
+    color: #fecaca 
+}
+
+.suggestions-box {
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 10px;
+}
+
+textarea{
+    resize: vertical;
+}
+
+.card {
+    max-width: 800px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    textarea, input, .card {
+        width: 90%;
+    }
+}
