@@ -63,8 +63,52 @@ def query_llama(prompt):
 
 
 #Adding a Skill Classification
+def classify_skills_llm(skill_list):
+    if not skill_list:
+        return{"must_have": [], "good_to_have": []}
+    prompt = f"""
+    Classify these skills into:
+    - must_have
+    - good_to_have
 
+    Return STRICT JSON:
 
+    {{
+    "must_have": [],
+    "good_to_have": []
+    }}
+
+    Skills:
+    {skill_list}
+    """
+    try:
+        response = query_llama(prompt)
+        return json.loads(response)
+    except:
+        return {"must_have": skill_list, "good_to_have": []}
+    
+
+#an experience socre (for now)
+
+def experience_score_llm(resume_text, job_desc):
+    prompt = f"""
+    Give a score from  0 to 1 for how well this resume shows relevant experience.
+
+    Resume:
+    {resume_text[:1500]}
+
+    Job Description:
+    {job_desc}
+
+    ONLY RETURN A NUMBER BETWEEN 0 AND 1.
+    Example Output: 0.58 (JUST THE NUMBER)
+    """
+    try:
+        response = query_llama(prompt)
+        return float(response.strip())
+    except:
+        return 0.5
+    
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
