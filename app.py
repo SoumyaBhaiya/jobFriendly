@@ -43,6 +43,12 @@ def extract_skills(text):
     found_skills = {k: v for k, v in found_skills.items() if v}
     return found_skills
 
+def flatten_skills(skill_dict):
+    all_skills = []
+    for skills in skill_dict.values():
+        all_skills.extend(skills)
+    return list(set(all_skills))
+
 #AI: Model type and connection
 def query_llama(prompt):
     response = requests.post(
@@ -56,14 +62,11 @@ def query_llama(prompt):
     return response.json()["response"]
 
 
+#Adding a Skill Classification
+
+
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# def compute_similarity(resume_text, job_desc):
-#     docs = [resume_text, job_desc]
-#     vectorizer = TfidfVectorizer(stop_words='english')
-#     tfidf_matrix = vectorizer.fit_transform(docs)
-#     score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
-#     return round(score[0][0] * 100, 2)
 
 #UPDATE, NEW COMPUTE SIMILARITY (if works better old one gonna be completely removed)
 
