@@ -254,7 +254,8 @@ def index():
     #returning to webpage 
     
     return render_template('index.html', score=score, missing_skills=missing_skills, 
-                           matched_skills=matched_skills, key_score=skill_score, sem_score=sem_score,
+                           matched_skills=matched_skills, key_score=skill_score, 
+                           sem_score=sem_score, exp_score=exp_score,
                            suggestions=suggestions)
 
 
