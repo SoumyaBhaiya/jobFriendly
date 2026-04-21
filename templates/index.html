@@ -6,13 +6,25 @@
     </head>
     <body>
         <h1>Welcome to jobFriendly</h1>
-        <form method="POST" enctype="multipart/form-data">
+
+        <! -- ERROR MESSAGE -- >
+        {% if error %}
+            <div class = "card error">
+                <p>{{errro}}</p>
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" onsubmit ="showLoading()">
                 <label>Upload Resume (ONLY PDF FOR NOW): </label><br>
                 <input type="file" name="resume" required><br><br>
                 <textarea name="job_desc" rows="10" cols="50" placeholder="Paste Job Description" required></textarea><br>
 
-                <button type="submit">Analyze</button>
+                <button type="submit" id="analyzeBtn">Analyze</button>
         </form>
+        <! -- LOADING -- >
+        <div id="loading" class="card hidden">
+            <p id = "loadingText">Analylzing... </p>
+        </div>
 
         {% if score is not none %}
         <div class="card">
@@ -22,12 +34,12 @@
                 <div class="fill" style="width: {{score}}%;"></div>
             </div>
             <p>Semantic Score: {{ (sem_score*100) | round(2) }}%</p>
-            <p>Keyword Score: {{ (key_score * 100) | round(2) }}%</p>
+            <p>Skill Score: {{ (key_score * 100) | round(2) }}%</p>
+            <p>Experience Score: {{ (exp_score*100) | round(2) }}%</p>
         </div>
         <div class="card">
             <h3 class="green"> Matched Skills: </h3>
             {% for category, skills in matched_skills.items() %}
-            <h4> {{category }}</h4>
             <ul>
                 {%for skill in skills %}
                 <li>{{skill}}</li>
@@ -38,7 +50,6 @@
         <div class="card">
             <h3 class="red"> Missing Skills: </h3>
             {% for category, skills in missing_skills.items() %}
-            <h4> {{category}}</h4>
             <ul>
                 {% for skill in skills %}
                 <li>{{skill}}</li>
@@ -53,5 +64,20 @@
         </div> 
     
     {% endif %}
+
+    <! -- JS -- >
+    <script>
+        function showLoading() {
+            document.getElementById("loading").classList.remove("hidden");
+            let text = "Analyzing";
+            let dots = 0;
+
+            setInterval(() => {
+                dots = (dots +1) % 4;
+                document.getElementById("loadingText").innerText = text + ".".repeat(dots);
+
+            }, 500);
+        }   
+    </script>
     </body>
 </html>
