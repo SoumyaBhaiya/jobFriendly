@@ -1,3 +1,9 @@
+''' WHAT SHOULD BE THE NEXT UPDATE ABOUT?
+ 1) Hoping to Seperate app.py and make sure that app.py ONLY import the code from the other library.
+ 2) Focusing on the deployment? And making a pipeline about how the stuff is gonna be deployed (Vercel)
+ 3) Just look into Parallelism of the code. (two prompts at one time???) (async)
+ '''
+
 from flask import Flask, request, render_template
 import pdfplumber
 
